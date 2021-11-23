@@ -90,7 +90,7 @@
         dictionaryItems.Clear();
         var counter = 0;
 
-        foreach (var sourceItem in DataSource)
+        foreach (var sourceItem in DataSource ?? Enumerable.Empty<TItem>())
         {
             if (sourceItem is TItem item)
             {
