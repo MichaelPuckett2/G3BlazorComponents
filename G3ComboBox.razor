@@ -10,6 +10,7 @@
 @code {
     private string optionText = "";
     private readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
+    private IEnumerable<TItem> dataSource = Enumerable.Empty<TItem>();
 
     protected override void OnInitialized()
     {
@@ -27,11 +28,19 @@
     public string Name { get; set; } = "";
 
     [Parameter]
-    public IEnumerable<TItem> DataSource { get; set; } = Enumerable.Empty<TItem>();
+    public IEnumerable<TItem> DataSource
+    {
+        get => dataSource;
+        set
+        {
+            dataSource = value;
+            UpdateItems();
+        }
+    }
 
     [Parameter]
-    public Expression<Func<TItem, string>> OptionText 
-    { 
+    public Expression<Func<TItem, string>> OptionText
+    {
         set
         {
             if (value.Body is MemberExpression memberExpression)
@@ -63,7 +72,7 @@
 
     private string GetItemOptionText(TItem item)
     {
-        if (string.IsNullOrWhiteSpace(optionText)) 
+        if (string.IsNullOrWhiteSpace(optionText))
         {
             throw new G3FieldNotSetException($"{nameof(optionText)} (set from {nameof(OptionText)})");
         }
