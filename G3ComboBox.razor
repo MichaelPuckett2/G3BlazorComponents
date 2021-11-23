@@ -1,7 +1,6 @@
 ﻿@typeparam TItem
 
 <select id="@Id" name="@Name" @onchange="OnChange" class="@SelectClass">
-    <option value=""></option>
     @foreach (var dictionaryItem in dictionaryItems)
     {
         <option class="@OptionClass" value="@dictionaryItem.Key">@GetItemOptionText(dictionaryItem.Value)</option>        
