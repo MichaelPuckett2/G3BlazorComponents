@@ -1,0 +1,108 @@
+﻿@typeparam TItem
+
+<select id="@Id" name="@Name" @onchange="OnChange" class="@SelectClass">
+    <option value=""></option>
+    @foreach (var dictionaryItem in dictionaryItems)
+    {
+        <option class="@OptionClass" value="@dictionaryItem.Key">@GetItemOptionText(dictionaryItem.Value)</option>        
+    }
+</select>
+
+@code {
+    private string optionText = "";
+    private readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        UpdateItems();
+    }
+
+    [Parameter]
+    public string SelectClass { get; set; } = "";
+    [Parameter]
+    public string OptionClass { get; set; } = "";
+    [Parameter]
+    public string Id { get; set; } = "";
+    [Parameter]
+    public string Name { get; set; } = "";
+
+    [Parameter]
+    public IEnumerable<TItem> DataSource { get; set; } = Enumerable.Empty<TItem>();
+
+    [Parameter]
+    public Expression<Func<TItem, string>> OptionText 
+    { 
+        set
+        {
+            if (value.Body is MemberExpression memberExpression)
+            {
+                optionText = memberExpression.Member.Name;
+            }
+            else
+            {
+                optionText = "";
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<TItem> Changed { get; set; }
+
+    private async void OnChange(ChangeEventArgs changeEventArgs)
+    {
+        if (changeEventArgs.Value is string str && int.TryParse(str, out int integer))
+        {
+            var sourceItem = dictionaryItems[integer];
+            await Changed.InvokeAsync(sourceItem);
+        }
+        else
+        {
+            throw new G3TypeExpectedException<TItem>();
+        }
+    }
+
+    private string GetItemOptionText(TItem item)
+    {
+        if (string.IsNullOrWhiteSpace(optionText)) 
+        {
+            throw new G3FieldNotSetException($"{nameof(optionText)} (set from {nameof(OptionText)})");
+        }
+
+        var propertyInfo = typeof(TItem).GetProperty(optionText);
+
+        if (propertyInfo == null)
+        {
+            throw new G3PropertyNotFoundException<TItem>(optionText);
+        }
+
+        if (propertyInfo.GetValue(item) is string value)
+        {
+            return value;
+        }
+        else
+        {
+            throw new G3TypeExpectedException<string>();
+        }
+    }
+
+    private async void UpdateItems()
+    {
+        dictionaryItems.Clear();
+        var counter = 0;
+
+        foreach (var sourceItem in DataSource)
+        {
+            if (sourceItem is TItem item)
+            {
+                dictionaryItems.Add(counter++, item);
+            }
+            else
+            {
+                throw new G3TypeExpectedException<TItem>();
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
