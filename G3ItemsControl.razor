@@ -1,0 +1,63 @@
+﻿@typeparam TItem
+
+@foreach(var dictionaryItem in dictionaryItems)
+{
+    <div @onclick="x => OnClick(dictionaryItem.Value)">@ChildContent(dictionaryItem.Value)</div>
+}
+
+@code {
+    protected readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
+    protected IEnumerable<TItem> dataSource = Enumerable.Empty<TItem>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        UpdateItems();
+    }
+
+    [Parameter]
+    public RenderFragment<TItem> ChildContent { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> ItemsSource
+    {
+        get => dataSource;
+        set
+        {
+            dataSource = value;
+            UpdateItems();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<TItem> ItemSelected { get; set; }
+
+    [Parameter]
+    public TItem SelectedItem { get; set; } = default;
+
+    protected async void OnClick(TItem item)
+    {
+        SelectedItem = item;
+        await ItemSelected.InvokeAsync(item);
+    }
+
+    protected async void UpdateItems()
+    {
+        dictionaryItems.Clear();
+        var counter = 0;
+
+        foreach (var sourceItem in ItemsSource ?? Enumerable.Empty<TItem>())
+        {
+            if (sourceItem is TItem item)
+            {
+                dictionaryItems.Add(counter++, item);
+            }
+            else
+            {
+                throw new G3TypeExpectedException<TItem>();
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
