@@ -1,8 +1,11 @@
 ﻿@typeparam TItem
+@inherits G3Control
 
-@foreach(var dictionaryItem in dictionaryItems)
+@foreach (var dictionaryItem in dictionaryItems)
 {
-    <div @onclick="x => OnClick(dictionaryItem.Value)">@ChildContent(dictionaryItem.Value)</div>
+    <div @onclick="x => OnClick(dictionaryItem.Value)">
+        @ChildContent(dictionaryItem.Value)
+    </div>
 }
 
 @code {

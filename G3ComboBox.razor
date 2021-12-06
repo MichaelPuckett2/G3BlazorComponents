@@ -1,26 +1,26 @@
 ﻿@typeparam TItem
 @inherits G3ItemsControl<TItem>
 
-<select id="@Id" name="@Name" @onchange="OnChange" class="@SelectClass">
+<select name="@Name" @onchange="OnChange" class="@SelectClass">
     <option selected value="-1" class="@OptionClass">@DefaultSelectText</option>
 
     @foreach (var dictionaryItem in dictionaryItems)
     {
-        <option class="@OptionClass" value="@dictionaryItem.Key">@ChildContent(dictionaryItem.Value)</option>
+        if (ChildContent is null)
+        {
+            <ComboBoxDefaultItemTemplate TItem="TItem" KeyValuePair="@dictionaryItem" />
+        }
+        else
+        {
+            <option value="@dictionaryItem.Key">@ChildContent(dictionaryItem.Value)</option>
+        }
     }
 </select>
 
 @code {
-    [Parameter]
-    public string DefaultSelectText { get; set; } = "";
-    [Parameter]
-    public string SelectClass { get; set; } = "";
-    [Parameter]
-    public string OptionClass { get; set; } = "";
-    [Parameter]
-    public string Id { get; set; } = "";
-    [Parameter]
-    public string Name { get; set; } = "";
+    [Parameter] public string DefaultSelectText { get; set; } = "";
+    [Parameter] public string SelectClass { get; set; } = "";
+    [Parameter] public string OptionClass { get; set; } = "";
 
     private async void OnChange(ChangeEventArgs changeEventArgs)
     {
