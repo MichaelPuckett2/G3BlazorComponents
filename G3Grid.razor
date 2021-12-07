@@ -1,0 +1,29 @@
+﻿@typeparam TItem
+@inherits SelectComponent<TItem>
+
+<table>
+    <thead>
+        <tr>
+            @foreach (var property in typeof(TItem).GetProperties())
+            {
+                <td>@property.Name</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ItemsSource)
+        {
+            <tr>
+                @foreach (var property in item.GetType().GetProperties())
+                {
+                    <td>@property.GetValue(item)</td>
+                }
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" align="center">This is the <b>footer</b> section of the table</td>
+        </tr>
+    </tfoot>
+</table>
