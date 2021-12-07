@@ -1,8 +1,11 @@
 ﻿@typeparam TItem
-@inherits G3ItemsControl<TItem>
+@inherits SelectComponent<TItem>
 
-<select name="@Name" @onchange="OnChange" class="@SelectClass">
-    <option selected value="-1" class="@OptionClass">@DefaultSelectText</option>
+<select name="@Name" class="@SelectClass" @onchange="OnChange">
+    @if (HasDefaultOption)
+    {
+        <option selected value="-1">@OptionText</option>
+    }
 
     @foreach (var dictionaryItem in dictionaryItems)
     {
@@ -12,33 +15,7 @@
         }
         else
         {
-            <option value="@dictionaryItem.Key">@ChildContent(dictionaryItem.Value)</option>
+            <option class="@OptionClass" value="@dictionaryItem.Key">@ChildContent(dictionaryItem.Value)</option>
         }
     }
 </select>
-
-@code {
-    [Parameter] public string DefaultSelectText { get; set; } = "";
-    [Parameter] public string SelectClass { get; set; } = "";
-    [Parameter] public string OptionClass { get; set; } = "";
-
-    private async void OnChange(ChangeEventArgs changeEventArgs)
-    {
-        if (changeEventArgs.Value is string str && int.TryParse(str, out int integer))
-        {
-            if (integer == -1)
-            {
-                await ItemSelected.InvokeAsync(default);
-            }
-            else
-            {
-                var sourceItem = dictionaryItems[integer];
-                await ItemSelected.InvokeAsync(sourceItem);
-            }
-        }
-        else
-        {
-            throw new G3TypeExpectedException<TItem>();
-        }
-    }
-}
