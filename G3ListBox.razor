@@ -9,13 +9,13 @@
 
     @foreach (var dictionaryItem in dictionaryItems)
     {
-        if (ChildContent is null)
+        if (ItemTemplate is null)
         {
             <ComboBoxDefaultItemTemplate TItem="TItem" KeyValuePair="@dictionaryItem" />
         }
         else
         {
-            <option class="@OptionClass" value="@dictionaryItem.Key">@ChildContent(dictionaryItem.Value)</option>
+            <option class="@OptionClass" value="@dictionaryItem.Key">@ItemTemplate(dictionaryItem.Value)</option>
         }
     }
 </select>

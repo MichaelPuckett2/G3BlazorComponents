@@ -4,7 +4,7 @@
 @foreach (var dictionaryItem in dictionaryItems)
 {
     <div @onclick="x => OnClick(dictionaryItem.Value)">
-        @ChildContent(dictionaryItem.Value)
+        @ItemTemplate(dictionaryItem.Value)
     </div>
 }
 
@@ -19,7 +19,7 @@
     }
 
     [Parameter]
-    public RenderFragment<TItem> ChildContent { get; set; }
+    public RenderFragment<TItem> ItemTemplate { get; set; }
 
     [Parameter]
     public IEnumerable<TItem> ItemsSource

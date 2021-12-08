@@ -8,14 +8,32 @@
             {
                 foreach (var column in Columns)
                 {
-                    <td width="@column.Width" height="@column.Height">@column.Header</td>
+                    <th width="@column.Width">
+                        @if (HeaderTemplate is null)
+                        {
+                            column.GetActualHeader();
+                        }
+                        else
+                        {
+                            @: @HeaderTemplate(column.GetActualHeader())
+                        }
+                    </th>
                 }
             }
             else
             {
                 foreach (var header in GetAutoHeaders())
                 {
-                    <td>@header</td>
+                    <th>
+                        @if (HeaderTemplate is null)
+                        {
+                            @header
+                        }
+                        else
+                        {
+                            @: @HeaderTemplate(header)
+                        }
+                    </th>
                 }
             }
         </tr>
@@ -23,36 +41,72 @@
     <tbody>
         @foreach (var item in ItemsSource)
         {
-            <tr>
-                @if (Columns.Any())
-                {
-                    foreach (var column in Columns)
+            if (RowTemplate is null)
+            {
+                <tr>
+                    @if (Columns.Any())
                     {
-                        <td width="@column.Width" height="@column.Height">@column.GetValue(item)</td>
+                        foreach (var column in Columns)
+                        {
+                            <td width="@column.Width">
+                                @if (ItemTemplate is null)
+                                {
+                                    @column.GetValue(item)
+                                }
+                                else
+                                {
+                                    @: @ItemTemplate(item)
+                                }
+                            </td>
+                        }
                     }
-                }
-                else
-                {
-                    foreach (var value in GetAutoValues(item))
+                    else
                     {
-                        <td>@value</td>
+                        foreach (var value in GetAutoValues(item))
+                        {
+                            <td>
+                                @if (ItemTemplate is null)
+                                {
+                                    @value
+                                }
+                                else
+                                {
+                                    @: @ItemTemplate(item)
+                                }
+                            </td>
+                        }
                     }
-                }
-                }
-            </tr>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    @RowTemplate(item)
+                </tr>
+            }
         }
     </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4" align="center">This is the <b>footer</b> section of the table</td>
-        </tr>
-    </tfoot>
+    @if (FooterTemplate is not null)
+    {
+        <tfoot>
+            <tr>
+                @FooterTemplate
+            </tr>
+        </tfoot>
+    }
 </table>
 
 @code {
     protected readonly IDictionary<string, string> columns = new Dictionary<string, string>();
 
     [Parameter] public IEnumerable<Column<TItem>> Columns { get; set; } = Enumerable.Empty<Column<TItem>>();
+    [Parameter] public RenderFragment<string> HeaderTemplate { get; set; }
+    [Parameter] public RenderFragment FooterTemplate { get; set; }
+
+    /// <summary>
+    /// The template for a table row. You should wrap your template inside <tr>..</tr>
+    /// </summary>
+    [Parameter] public RenderFragment<TItem> RowTemplate { get; set; }
 
     protected IEnumerable<string> GetAutoHeaders()
     {
