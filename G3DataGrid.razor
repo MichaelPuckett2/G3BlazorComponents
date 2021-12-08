@@ -1,0 +1,82 @@
+﻿@typeparam TItem
+@inherits SelectComponent<TItem>
+
+<table>
+    <thead>
+        <tr>
+            @foreach (var header in GetHeaders())
+            {
+                <td>@header</td>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ItemsSource)
+        {
+            <tr>
+                @foreach (var value in GetCellValues(item))
+                {
+                    <td>@value</td>
+                }
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" align="center">This is the <b>footer</b> section of the table</td>
+        </tr>
+    </tfoot>
+</table>
+
+@code {
+    protected readonly IDictionary<string, string> columns = new Dictionary<string, string>();
+
+    [Parameter] public IEnumerable<Column<TItem>> Columns { get; set; }
+
+    protected IEnumerable<string> GetHeaders()
+    {
+        if (Columns?.Any() ?? false)
+        {
+            foreach (var column in Columns)
+            {
+                yield return column.Header;
+            }
+        }
+        else
+        {
+            var properties = typeof(TItem).GetProperties();
+            foreach (var propertyName in properties.Select(x => x.Name))
+            {
+                yield return propertyName;
+            }
+        }
+    }
+
+    protected IEnumerable<string> GetCellValues(TItem item)
+    {
+        var properties = typeof(TItem).GetProperties().ToList();
+        if (Columns?.Any() ?? false)
+        {
+            foreach (var column in Columns)
+            {
+                if (column.PropertyName.Body is MemberExpression memberExpression)
+                {
+                    var property = properties.FirstOrDefault(x => memberExpression.Member.Name == x.Name);
+
+                    if (property is not null)
+                    {
+                        var value = property.GetValue(item).ToString();
+                        yield return value;
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (var property in properties)
+            {
+                yield return property.GetValue(item).ToString();
+            }
+        }
+    }
+}
