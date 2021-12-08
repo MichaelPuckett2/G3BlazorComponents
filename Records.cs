@@ -2,7 +2,10 @@
 
 namespace G3BlazorComponents
 {
-    public record Column<T>(Expression<Func<T, object>> PropertyName, string Header);
+    public record Column<T>(Expression<Func<T, object>> PropertyName, 
+                            string Header = "",
+                            double Width = double.NaN,
+                            double Height = double.NaN);
 
     internal class Records
     {

@@ -1,5 +1,5 @@
-﻿@typeparam TItem
-@inherits G3ItemsControl<TItem>
+﻿@typeparam T
+@inherits G3ItemsControl<T>
 
 @code {
     [Parameter] public string SelectClass { get; set; } = "";
@@ -23,7 +23,7 @@
         }
         else
         {
-            throw new G3TypeExpectedException<TItem>();
+            throw new G3TypeExpectedException<T>();
         }
     }
 }

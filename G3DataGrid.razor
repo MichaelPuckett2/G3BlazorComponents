@@ -4,9 +4,19 @@
 <table>
     <thead>
         <tr>
-            @foreach (var header in GetHeaders())
+            @if (Columns.Any())
             {
-                <td>@header</td>
+                foreach (var column in Columns)
+                {
+                    <td width="@column.Width" height="@column.Height">@column.Header</td>
+                }
+            }
+            else
+            {
+                foreach (var header in GetAutoHeaders())
+                {
+                    <td>@header</td>
+                }
             }
         </tr>
     </thead>
@@ -14,9 +24,20 @@
         @foreach (var item in ItemsSource)
         {
             <tr>
-                @foreach (var value in GetCellValues(item))
+                @if (Columns.Any())
                 {
-                    <td>@value</td>
+                    foreach (var column in Columns)
+                    {
+                        <td width="@column.Width" height="@column.Height">@column.GetValue(item)</td>
+                    }
+                }
+                else
+                {
+                    foreach (var value in GetAutoValues(item))
+                    {
+                        <td>@value</td>
+                    }
+                }
                 }
             </tr>
         }
@@ -31,52 +52,23 @@
 @code {
     protected readonly IDictionary<string, string> columns = new Dictionary<string, string>();
 
-    [Parameter] public IEnumerable<Column<TItem>> Columns { get; set; }
+    [Parameter] public IEnumerable<Column<TItem>> Columns { get; set; } = Enumerable.Empty<Column<TItem>>();
 
-    protected IEnumerable<string> GetHeaders()
+    protected IEnumerable<string> GetAutoHeaders()
     {
-        if (Columns?.Any() ?? false)
+        var properties = typeof(TItem).GetProperties();
+        foreach (var propertyName in properties.Select(x => x.Name))
         {
-            foreach (var column in Columns)
-            {
-                yield return column.Header;
-            }
-        }
-        else
-        {
-            var properties = typeof(TItem).GetProperties();
-            foreach (var propertyName in properties.Select(x => x.Name))
-            {
-                yield return propertyName;
-            }
+            yield return propertyName;
         }
     }
 
-    protected IEnumerable<string> GetCellValues(TItem item)
+    protected IEnumerable<string> GetAutoValues(TItem t)
     {
-        var properties = typeof(TItem).GetProperties().ToList();
-        if (Columns?.Any() ?? false)
+        var properties = typeof(TItem).GetProperties();
+        foreach (var propertyName in properties)
         {
-            foreach (var column in Columns)
-            {
-                if (column.PropertyName.Body is MemberExpression memberExpression)
-                {
-                    var property = properties.FirstOrDefault(x => memberExpression.Member.Name == x.Name);
-
-                    if (property is not null)
-                    {
-                        var value = property.GetValue(item).ToString();
-                        yield return value;
-                    }
-                }
-            }
-        }
-        else
-        {
-            foreach (var property in properties)
-            {
-                yield return property.GetValue(item).ToString();
-            }
+            yield return propertyName.GetValue(t)?.ToString() ?? string.Empty;
         }
     }
 }
