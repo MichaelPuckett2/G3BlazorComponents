@@ -7,18 +7,18 @@
     [Parameter] public string OptionText { get; set; } = "";
     [Parameter] public bool HasDefaultOption { get; set; } = false;
 
-    protected async void OnChange(ChangeEventArgs changeEventArgs)
+    protected void OnChange(ChangeEventArgs changeEventArgs)
     {
         if (changeEventArgs.Value is string str && int.TryParse(str, out int integer))
         {
             if (integer == -1)
             {
-                await ItemSelected.InvokeAsync(default);
+                SelectedItem = default;
             }
             else
             {
                 var sourceItem = dictionaryItems[integer];
-                await ItemSelected.InvokeAsync(sourceItem);
+                SelectedItem = sourceItem;
             }
         }
         else

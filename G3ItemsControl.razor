@@ -3,12 +3,13 @@
 
 @foreach (var dictionaryItem in dictionaryItems)
 {
-    <div @onclick="x => OnClick(dictionaryItem.Value)">
+    <div @onclick="x => SelectedItem = dictionaryItem.Value">
         @ItemTemplate(dictionaryItem.Value)
     </div>
 }
 
 @code {
+    private TItem selectedItem = default;
     protected readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
     protected IEnumerable<TItem> dataSource = Enumerable.Empty<TItem>();
 
@@ -33,15 +34,17 @@
     }
 
     [Parameter]
-    public EventCallback<TItem> ItemSelected { get; set; }
+    public EventCallback<TItem> SelectedItemChanged { get; set; }
 
     [Parameter]
-    public TItem SelectedItem { get; set; } = default;
-
-    protected async void OnClick(TItem item)
+    public TItem SelectedItem
     {
-        SelectedItem = item;
-        await ItemSelected.InvokeAsync(item);
+        get => selectedItem;
+        set
+        {
+            selectedItem = value;
+            SelectedItemChanged.InvokeAsync(selectedItem);
+        }
     }
 
     protected async void UpdateItems()
