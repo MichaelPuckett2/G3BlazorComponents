@@ -25,7 +25,7 @@
     [Parameter]
     public IEnumerable<TItem> ItemsSource
     {
-        get => dataSource;
+        get => dataSource ?? Enumerable.Empty<TItem>();
         set
         {
             dataSource = value;

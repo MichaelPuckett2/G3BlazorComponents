@@ -1,7 +1,12 @@
 ﻿@typeparam TItem
 @inherits SelectComponent<TItem>
+@using System.Text.RegularExpressions
 
 <style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
     .defaultRowStyle:hover {
         /*#0093FF #EB00FF #FF6C00 #14FF00 */
         background-color: #0093ff;
@@ -29,11 +34,11 @@
                     <th width="@column.Width">
                         @if (HeaderTemplate is null)
                         {
-                            column.GetActualHeader();
+                            column.GetActualHeader(IsSplitCamelCaseWithSpace);
                         }
                         else
                         {
-                            @: @HeaderTemplate(column.GetActualHeader())
+                            @: @HeaderTemplate(column.GetActualHeader(IsSplitCamelCaseWithSpace))
                         }
                     </th>
                 }
@@ -124,6 +129,7 @@
     [Parameter] public RenderFragment FooterTemplate { get; set; }
     [Parameter] public string RowStyle { get; set; } = DefaultRowStyle;
     [Parameter] public string SelectedRowStyle { get; set; } = DefaultSelectedRowStyle;
+    [Parameter] public bool IsSplitCamelCaseWithSpace { get; set; } = true;
 
     /// <summary>
     /// The template for a table row. You should wrap your template inside <tr>..</tr>
@@ -133,7 +139,7 @@
     protected IEnumerable<string> GetAutoHeaders()
     {
         var properties = typeof(TItem).GetProperties();
-        foreach (var propertyName in properties.Select(x => x.Name))
+        foreach (var propertyName in properties.Select(x => IsSplitCamelCaseWithSpace ? Regex.Replace(x.Name, "(\\B[A-Z])", " $1") : x.Name))
         {
             yield return propertyName;
         }

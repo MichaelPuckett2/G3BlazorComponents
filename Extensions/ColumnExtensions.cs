@@ -1,4 +1,7 @@
-﻿namespace G3BlazorComponents.Extensions
+﻿using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace G3BlazorComponents.Extensions
 {
     public static class ColumnExtensions
     {
@@ -28,9 +31,11 @@
         /// <typeparam name="T">The T parameter</typeparam>
         /// <param name="column">Current column</param>
         /// <returns>string value of the auto generated header.</returns>
-        public static string GetAutoHeader<T>(this Column<T> column)
-        {
-            return column.PropertyName.Body.GetMemberName();
+        public static string GetAutoHeader<T>(this Column<T> column, bool isSplitCamelCaseWithSpace = true)
+        {            
+            return isSplitCamelCaseWithSpace
+                ? Regex.Replace(column.PropertyName.Body.GetMemberName(), "(\\B[A-Z])", " $1") 
+                : column.PropertyName.Body.GetMemberName();
         }
 
         /// <summary>
@@ -39,9 +44,9 @@
         /// <typeparam name="T">The T parameter</typeparam>
         /// <param name="column">Current column</param>
         /// <returns>string based on either the supplied Header or the auto generated header from the PropertyName.</returns>
-        public static string GetActualHeader<T>(this Column<T> column)
+        public static string GetActualHeader<T>(this Column<T> column, bool isSplitCamelCaseWithSpace = true)
         {
-            return string.IsNullOrEmpty(column.Header) ? column.GetActualHeader() : column.Header;
+            return string.IsNullOrEmpty(column.Header) ? column.GetAutoHeader(isSplitCamelCaseWithSpace) : column.Header;
         }
     }
 }
