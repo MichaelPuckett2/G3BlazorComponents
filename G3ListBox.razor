@@ -1,7 +1,7 @@
 ﻿@typeparam TItem
 @inherits SelectComponent<TItem>
 
-<select name="@Name" class="@SelectClass" @onchange="OnChange">
+<select name="@Name" class="@SelectClass" @onchange="OnChange" size="@dictionaryItems.Count">
     @if (HasDefaultOption)
     {
         <option selected value="-1">@OptionText</option>

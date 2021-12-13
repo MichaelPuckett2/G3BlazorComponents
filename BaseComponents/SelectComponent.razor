@@ -1,0 +1,29 @@
+﻿@typeparam T
+@inherits G3ItemsControl<T>
+
+@code {
+    [Parameter] public string SelectClass { get; set; } = "";
+    [Parameter] public string OptionClass { get; set; } = "";
+    [Parameter] public string OptionText { get; set; } = "";
+    [Parameter] public bool HasDefaultOption { get; set; } = false;
+
+    protected void OnChange(ChangeEventArgs changeEventArgs)
+    {
+        if (changeEventArgs.Value is string str && int.TryParse(str, out int integer))
+        {
+            if (integer == -1)
+            {
+                SelectedItem = default;
+            }
+            else
+            {
+                var sourceItem = dictionaryItems[integer];
+                SelectedItem = sourceItem;
+            }
+        }
+        else
+        {
+            throw new G3TypeExpectedException<T>();
+        }
+    }
+}
