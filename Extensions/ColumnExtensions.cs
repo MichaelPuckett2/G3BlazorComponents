@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace G3BlazorComponents.Extensions
 {
@@ -34,7 +33,7 @@ namespace G3BlazorComponents.Extensions
         public static string GetAutoHeader<T>(this Column<T> column, bool isSplitCamelCaseWithSpace = true)
         {            
             return isSplitCamelCaseWithSpace
-                ? Regex.Replace(column.PropertyName.Body.GetMemberName(), "(\\B[A-Z])", " $1") 
+                ? column.PropertyName.Body.GetMemberName().SplitCamelCase()
                 : column.PropertyName.Body.GetMemberName();
         }
 

@@ -1,9 +1,8 @@
 ﻿@typeparam TItem
 @inherits SelectComponent<TItem>
-@using System.Text.RegularExpressions
 
 <style>
-    table, th, td {
+    .defaultDataGrid table, th, td {
         border: 1px solid black;
     }
 
@@ -24,7 +23,7 @@
         }
 </style>
 
-<table>
+<table class="defaultDataGrid">
     <thead>
         <tr>
             @if (Columns.Any())
@@ -34,7 +33,7 @@
                     <th width="@column.Width">
                         @if (HeaderTemplate is null)
                         {
-                            column.GetActualHeader(IsSplitCamelCaseWithSpace);
+                            @column.GetActualHeader(IsSplitCamelCaseWithSpace);
                         }
                         else
                         {
@@ -139,7 +138,7 @@
     protected IEnumerable<string> GetAutoHeaders()
     {
         var properties = typeof(TItem).GetProperties();
-        foreach (var propertyName in properties.Select(x => IsSplitCamelCaseWithSpace ? Regex.Replace(x.Name, "(\\B[A-Z])", " $1") : x.Name))
+        foreach (var propertyName in properties.Select(x => IsSplitCamelCaseWithSpace ? x.Name.SplitCamelCase() : x.Name))
         {
             yield return propertyName;
         }
