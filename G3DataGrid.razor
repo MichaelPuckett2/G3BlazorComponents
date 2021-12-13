@@ -65,7 +65,7 @@
         {
             if (RowTemplate is null)
             {
-                <tr @onclick="x => SelectedItem = item" class="@GetRowClass(item)">
+                <tr @onclick="async x => await OnItemClickedAsync(item)" class="@GetRowClass(item)">
                     @if (Columns.Any())
                     {
                         foreach (var column in Columns)
@@ -102,7 +102,7 @@
             }
             else
             {
-                <tr @onclick="x => SelectedItem = item" class="@GetRowClass(item)">
+                <tr @onclick="async x => await OnItemClickedAsync(item)" class="@GetRowClass(item)">
                     @RowTemplate(item)
                 </tr>
             }
@@ -124,8 +124,8 @@
     protected readonly IDictionary<string, string> columns = new Dictionary<string, string>();
 
     [Parameter] public IEnumerable<Column<TItem>> Columns { get; set; } = Enumerable.Empty<Column<TItem>>();
-    [Parameter] public RenderFragment<string> HeaderTemplate { get; set; }
-    [Parameter] public RenderFragment FooterTemplate { get; set; }
+    [Parameter] public RenderFragment<string> HeaderTemplate { get; set; } = default;
+    [Parameter] public RenderFragment FooterTemplate { get; set; } = default;
     [Parameter] public string RowStyle { get; set; } = DefaultRowStyle;
     [Parameter] public string SelectedRowStyle { get; set; } = DefaultSelectedRowStyle;
     [Parameter] public bool IsSplitCamelCaseWithSpace { get; set; } = true;
