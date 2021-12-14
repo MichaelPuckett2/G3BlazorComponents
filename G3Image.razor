@@ -1,0 +1,22 @@
+﻿@inherits G3Control
+
+@*<img @attributes="AdditionalAttributes" class="img-fluid" />*@
+<img src="@ImageUrl" alt="@Description" />
+
+@code {
+    private string description = "";
+
+    //[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> AdditionalAttributes { get; set; }
+    [Parameter] public string ImageUrl { get; set; } = "";
+    [Parameter] public string Description
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(description) ? ImageUrl : description;
+        }
+        set
+        {
+            description = value;
+        }
+    }
+}

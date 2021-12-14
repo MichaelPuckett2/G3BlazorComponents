@@ -1,0 +1,35 @@
+﻿@typeparam TItem
+@inherits SelectComponent<TItem>
+
+<div>
+   @* @foreach (var property in typeof(TItem).GetProperties())
+    {
+        name = property.Name;
+    }*@
+    @foreach (var item in ItemsSource)
+    {
+        @foreach (var property in item.GetType().GetProperties())
+        {
+            name = property.Name;
+            <input type="radio" name="@RadioBtnName" id="" value="@property.GetValue(item)">   @property.GetValue(item)<br />
+        }
+    }
+</div>
+
+@code{
+    private string radioBtnName = "";
+    public string name = "";
+    public List<string> radioId = new List<string>();
+
+    [Parameter] public string RadioBtnName 
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(radioBtnName) ? RadioBtnName : "RadioGroup";
+        }
+        set
+        {
+            radioBtnName = value;
+        }
+    }
+}
