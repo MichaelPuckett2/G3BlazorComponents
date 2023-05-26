@@ -1,0 +1,73 @@
+﻿@typeparam TItem
+@inherits Control
+
+@foreach (var dictionaryItem in dictionaryItems)
+{
+    <div @onclick="async x => await OnItemClickedAsync(dictionaryItem.Value)">
+        @if (ItemTemplate is null)
+        {
+            @dictionaryItem.Value
+        }
+        else
+        {
+            @ItemTemplate(dictionaryItem.Value)
+        }
+    </div>
+}
+
+@code {
+    protected readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
+    protected IEnumerable<TItem> dataSource = Enumerable.Empty<TItem>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        UpdateItems();
+    }
+
+    [Parameter]
+    public RenderFragment<TItem>? ItemTemplate { get; set; }
+
+    [Parameter]
+    public IEnumerable<TItem> DataSource
+    {
+        get => dataSource ?? Enumerable.Empty<TItem>();
+        set
+        {
+            dataSource = value;
+            UpdateItems();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<TItem> ItemClicked { get; set; }
+
+    [Parameter]
+    public TItem? SelectedItem { get; set; } = default;
+
+    protected async Task OnItemClickedAsync(TItem item)
+    {
+        SelectedItem = item;
+        await ItemClicked.InvokeAsync(SelectedItem);
+    }
+
+    protected async void UpdateItems()
+    {
+        dictionaryItems.Clear();
+        var counter = 0;
+
+        foreach (var dataItem in DataSource ?? Enumerable.Empty<TItem>())
+        {
+            if (dataItem is TItem item)
+            {
+                dictionaryItems.Add(counter++, item);
+            }
+            else
+            {
+                throw new TypeExpectedException<TItem>();
+            }
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

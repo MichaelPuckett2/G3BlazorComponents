@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Repos\\G3BlazorComponents\\G3BlazorComponents.Sandbox\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.G3BlazorComponents.Sandbox.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.G3BlazorComponents.Sandbox.props",
+      "PackagePath": "build\\G3BlazorComponents.Sandbox.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.G3BlazorComponents.Sandbox.props",
+      "PackagePath": "buildMultiTargeting\\G3BlazorComponents.Sandbox.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.G3BlazorComponents.Sandbox.props",
+      "PackagePath": "buildTransitive\\G3BlazorComponents.Sandbox.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

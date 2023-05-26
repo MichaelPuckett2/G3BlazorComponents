@@ -1,0 +1,11 @@
+﻿@typeparam TItem
+
+<td>@ChildContent ?? @string.Empty</td>
+
+@code {
+    [Parameter]
+    public Func<TItem, string, string, bool>? SelectTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; } 
+}

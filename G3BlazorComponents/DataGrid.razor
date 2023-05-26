@@ -1,0 +1,133 @@
+﻿@typeparam TItem
+@inherits SelectComponent<TItem>
+
+<table class=@TableClass style=@TableStyle>
+    <thead class=@TheadClass style=@TheadStyle>
+        <tr>
+            @if (HeadRowTemplate is not null)
+            {
+                @HeadRowTemplate
+            }
+            else
+            {
+                foreach (var header in GetAutoHeaders())
+                {
+                    <th>
+                        @header
+                    </th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody class=@TbodyClass style=@TbodyStyle>
+        @foreach (var item in DataSource)
+        {
+            if (RowTemplate is not null)
+            {
+                <tr @onclick="async x => await OnItemClickedAsync(item)" class=@GetRowClass(item) style=@GetRowStyle(item)>
+                    @RowTemplate(item)
+                </tr>
+            }
+            else
+            {
+                <tr @onclick="async x => await OnItemClickedAsync(item)" class=@GetRowClass(item) style=@GetRowStyle(item)>
+                    @if (ItemTemplate is not null)
+                    {
+                        @ItemTemplate(item)
+                    }
+                    else
+                    {
+                        foreach (var value in GetAutoValues(item, IsSplitCamelCaseWithSpace))
+                        {
+                            <td>
+                                @value.PropertyValue
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        }
+    </tbody>
+    @if (FooterTemplate is not null)
+    {
+        <tfoot>
+            <tr>
+                @FooterTemplate
+            </tr>
+        </tfoot>
+    }
+</table>
+
+@code {
+    [Parameter]
+    public bool IsSplitCamelCaseWithSpace { get; set; } = true;
+
+    [Parameter]
+    public string TableClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TableStyle { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TheadClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TheadStyle { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TbodyClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string TbodyStyle { get; set; } = string.Empty;
+
+    [Parameter]
+    public string RowClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string RowStyle { get; set; } = string.Empty;
+
+    [Parameter]
+    public string RowClassSelected { get; set; } = string.Empty;
+
+    [Parameter]
+    public string RowStyleSelected { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? HeadRowTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem>? RowTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? FooterTemplate { get; set; }
+
+    protected IEnumerable<string> GetAutoHeaders()
+    {
+        var properties = typeof(TItem).GetProperties();
+        foreach (var propertyName in properties.Select(x => IsSplitCamelCaseWithSpace ? x.Name.SplitCamelCase() : x.Name))
+        {
+            yield return propertyName;
+        }
+    }
+
+    protected IEnumerable<(string PropertyName, string PropertyValue)> GetAutoValues(TItem t, bool ignoreSplitCamelCaseWithSpace = false)
+    {
+        var propertyInfos = typeof(TItem).GetProperties();
+        foreach (var propertyInfo in propertyInfos)
+        {
+            yield return (propertyInfo.Name, IsSplitCamelCaseWithSpace ? propertyInfo.GetValue(t)?.ToString()?.SplitCamelCase() ?? string.Empty : propertyInfo.GetValue(t)?.ToString() ?? string.Empty);
+        }
+    }
+
+    private string GetRowClass(TItem item)
+    {
+        var isItemSelected = SelectedItem?.Equals(item) ?? false;
+        return isItemSelected ? RowClassSelected : RowClass;
+    }
+
+    private string GetRowStyle(TItem item)
+    {
+        var isItemSelected = SelectedItem?.Equals(item) ?? false;
+        return isItemSelected ? RowStyleSelected : RowStyle;
+    }
+}

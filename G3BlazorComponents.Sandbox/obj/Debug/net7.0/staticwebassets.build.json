@@ -1,0 +1,49 @@
+{
+  "Version": 1,
+  "Hash": "+xZqtdazpwXhHtbBFVIpKWv4nxh7sPGFKmrrp9Gh+dQ=",
+  "Source": "G3BlazorComponents.Sandbox",
+  "BasePath": "_content/G3BlazorComponents.Sandbox",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Repos\\G3BlazorComponents\\G3BlazorComponents\\G3BlazorComponents.csproj",
+      "Version": 2,
+      "Source": "G3BlazorComponents",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
+    }
+  ],
+  "DiscoveryPatterns": [
+    {
+      "Name": "G3BlazorComponents.Sandbox\\wwwroot",
+      "Source": "G3BlazorComponents.Sandbox",
+      "ContentRoot": "C:\\Repos\\G3BlazorComponents\\G3BlazorComponents.Sandbox\\wwwroot\\",
+      "BasePath": "_content/G3BlazorComponents.Sandbox",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Repos\\G3BlazorComponents\\G3BlazorComponents.Sandbox\\wwwroot\\css\\site.css",
+      "SourceId": "G3BlazorComponents.Sandbox",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Repos\\G3BlazorComponents\\G3BlazorComponents.Sandbox\\wwwroot\\",
+      "BasePath": "_content/G3BlazorComponents.Sandbox",
+      "RelativePath": "css/site.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\site.css"
+    }
+  ]
+}
