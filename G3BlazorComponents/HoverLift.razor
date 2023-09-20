@@ -1,9 +1,10 @@
 ﻿<style>
     .g3-hover-lift {
         transform: scale(1, 1);
-        transform-origin: left;
+        transform-origin: @originString;
         transition: @transitionTimeString;
     }
+
         .g3-hover-lift:hover {
             transform: scale(@Scale, @Scale);
         }
@@ -13,15 +14,18 @@
     @ChildContent
 </div>
 
-@code{
+@code {
     private double transitionTime = 0.2;
     private string transitionTimeString = "0.2s";
+    private string originString => $"{TransformOriginX * 100}% {TransformOriginY * 100}%";
+    private double transformOriginX = 0.5;
+    private double transformOriginY = 0.5;
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
-    public double Scale { get; set; }= 1.1;
+    public double Scale { get; set; } = 1.1;
 
     [Parameter]
     public double TransitionTime
@@ -36,4 +40,33 @@
             transitionTimeString = $"{transitionTime}s";
         }
     }
+
+
+    [Parameter]
+    public double TransformOriginY
+    {
+        get => transformOriginY;
+        set 
+        {
+            if (value < 0 || value > 1)
+                throw new ArgumentOutOfRangeException(nameof(value), "TransformOriginY must be between 0 and 1.");
+
+            transformOriginY = value;
+        }
+    }
+    
+
+    [Parameter]
+    public double TransformOriginX
+    {
+        get => transformOriginX;
+        set
+        {
+            if (value < 0 || value > 1)
+                throw new ArgumentOutOfRangeException(nameof(value), "TransformOriginX must be between 0 and 1.");
+
+            transformOriginX = value;
+        }
+    }
+
 }
