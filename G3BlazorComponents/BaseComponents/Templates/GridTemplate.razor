@@ -1,0 +1,10 @@
+﻿@typeparam TItem
+
+@code {
+
+    [Parameter]
+    public RenderFragment<IEnumerable<TItem>>? HeadTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<TItem>? ChildContent { get; set; }
+}
