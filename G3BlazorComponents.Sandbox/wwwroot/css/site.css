@@ -26,20 +26,3 @@
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
-
-.defaultDataGrid table, th, td {
-    border: 1px solid black;
-}
-
-.defaultRowStyle:hover {
-    background-color: #0093ff;
-}
-
-.defaultSelectedRowStyle {
-    background-color: #0014FF;
-    color: white;
-}
-
-    .defaultSelectedRowStyle:hover {
-        background-color: #0093FF;
-    }

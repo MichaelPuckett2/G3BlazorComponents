@@ -1,0 +1,81 @@
+﻿@typeparam TItem
+@inherits BaseComponent
+
+<Virtualize Items=dictionaryItems Context=dictionaryItem>
+    <div @onclick="async x => await OnItemClickedAsync(dictionaryItem.Value)">
+        @if (ItemTemplate is not null)
+        {
+            @ItemTemplate(dictionaryItem.Value)
+        }
+        else
+        {
+            @dictionaryItem.Value
+        }
+    </div>
+</Virtualize>
+
+@code {
+    protected readonly IDictionary<int, TItem> dictionaryItems = new Dictionary<int, TItem>();
+    protected IImmutableList<TItem> dataSource = Enumerable.Empty<TItem>().ToImmutableList();
+
+    public event Action DataSourceUpdated = delegate { };
+
+    [Parameter]
+    public RenderFragment<TItem>? ItemTemplate { get; set; }
+
+    [Parameter]
+    public IImmutableList<TItem> DataSource
+    {
+        get => dataSource;
+        set
+        {
+            if (dataSource == value) return;
+            dataSource = value;
+            UpdateItems();
+            DataSourceUpdated.Invoke();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<TItem> ItemClicked { get; set; }
+
+    [Parameter]
+    public TItem? SelectedItem { get; set; } = default;
+
+    protected async Task OnItemClickedAsync(TItem item)
+    {
+        if (SelectedItem?.Equals(item) ?? false)
+        {
+            SelectedItem = default;
+        }
+        else
+        {
+            SelectedItem = item;
+        }
+        await ItemClicked.InvokeAsync(SelectedItem);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        UpdateItems();
+    }
+
+    protected void UpdateItems()
+    {
+        dictionaryItems.Clear();
+        var counter = 0;
+
+        foreach (var dataItem in DataSource ?? Enumerable.Empty<TItem>())
+        {
+            if (dataItem is TItem item)
+            {
+                dictionaryItems.Add(counter++, item);
+            }
+            else
+            {
+                throw new TypeExpectedException<TItem>();
+            }
+        }
+    }
+}

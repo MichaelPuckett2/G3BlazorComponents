@@ -1,0 +1,67 @@
+﻿<style>
+    .sidenav {
+        display: flex;
+        height: 100%;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        right: 0;
+        overflow-x: hidden;
+        width: auto;
+        transform: scale(0, 1);
+        transform-origin: right;
+        transition: 0.12s;
+        transition-timing-function: ease-out;
+    }
+
+    .sidenav-open {
+        transform: scale(1, 1);
+    }
+
+    .backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
+        width: 100%;
+        height: 100%;
+    }
+
+    .backdrop-open {
+        display: flex;
+        background-color: rgba(0, 0, 0, 0.3);
+        width: 100%;
+    }
+</style>
+
+<div class="backdrop @BackdropState" @onclick=@Toggle>
+</div>
+<div @ref="Nav" class="sidenav @NavState" @onclick:stopPropagation=@true>
+    <div style=@($"width:{Width}px;")>
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Parameter]
+    public int Width { get; set; } = 440;
+
+    ElementReference? Nav { get; set; }
+
+    string NavState => IsOpen ? "sidenav-open" : "";
+    string BackdropState => IsOpen ? "backdrop-open" : "";
+
+    public void Open() => IsOpen = true;
+    public void Close() => IsOpen = false;
+    public void Toggle() => IsOpen = !IsOpen;
+}

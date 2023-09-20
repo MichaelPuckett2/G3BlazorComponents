@@ -1,16 +1,86 @@
 ﻿@typeparam TItem
-@inherits SelectComponent<TItem>
+@inherits ItemsComponent<TItem>
 
-@if (GridTemplate is not null)
+@if (HeadTemplate is not null)
 {
-    @GridTemplate(DataSource)
+    @HeadTemplate
 }
 else
 {
-    <h1>GridTemplate is not specified.</h1>
+    <h3>HeadTemplate not specified.</h3>
 }
-
+@if (RowTemplate is not null)
+{
+    <Virtualize Items=SelectableItems>
+        <SelectableItemComponent SelectableItem=context>
+            <Template Context="item">
+                @RowTemplate(item)
+            </Template>
+            <SelectedTemplate Context="item">
+                @if (SelectedRowTemplate is not null)
+                {
+                    @SelectedRowTemplate(item)
+                }
+            </SelectedTemplate>
+        </SelectableItemComponent>
+    </Virtualize>
+}
+else
+{
+    <h3>RowTemplate is not specified.</h3>
+}
 @code {
     [Parameter]
-    public RenderFragment<IEnumerable<TItem>>? GridTemplate { get; set; }
+    public RenderFragment? HeadTemplate { get; set; }
+
+    [Parameter]
+    public SelectionMode SelectionMode { get; set; } = SelectionMode.Single;
+
+    [Parameter]
+    public RenderFragment<SelectableItem<TItem>>? RowTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment<SelectableItem<TItem>>? SelectedRowTemplate { get; set; }
+
+    public ImmutableList<SelectableItem<TItem>> SelectableItems { get; private set; } = ImmutableList.Create<SelectableItem<TItem>>();
+
+    override protected void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            DataSourceUpdated += OnDataSourceUpdated;
+        }
+    }
+
+    private void OnDataSourceUpdated()
+    {
+        SelectableItems = DataSource.Select(GetSelectableItem).ToImmutableList();
+    }
+
+    private SelectableItem<TItem> GetSelectableItem(TItem item, int index)
+    {
+        var selectableItem = new SelectableItem<TItem>(item, index);
+        switch (SelectionMode)
+        {
+            case SelectionMode.Single:
+                selectableItem.Selected += DeselectOtherItems;
+                break;
+            case SelectionMode.Multiple:
+            default:
+                break;
+        }
+        return selectableItem;
+    }
+
+    private async void DeselectOtherItems(SelectableItem<TItem> selectableItem)
+    {
+        SelectableItems.ForEach(x =>
+        {
+            if (!x.Item.Equals(selectableItem.Item))
+            {
+                x.IsSelected = false;
+            }
+        });
+        await InvokeAsync(StateHasChanged);
+    }
 }

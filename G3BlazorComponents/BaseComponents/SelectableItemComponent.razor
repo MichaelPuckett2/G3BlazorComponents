@@ -1,0 +1,31 @@
+﻿@typeparam TItem
+@inherits BaseComponent
+
+@if (Template is not null)
+{
+    if (SelectableItem.IsSelected && SelectedTemplate is not null)
+    {
+        @SelectedTemplate(SelectableItem)
+    }
+    else
+    {
+        @Template(SelectableItem)
+    }
+}
+
+@code {
+    [Parameter]
+    public RenderFragment<SelectableItem<TItem>>? Template { get; set; }
+
+    [Parameter]
+    public RenderFragment<SelectableItem<TItem>>? SelectedTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ItemSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> ItemUnselected { get; set; }
+
+    [Parameter]
+    public SelectableItem<TItem> SelectableItem { get; set; } = SelectableItem<TItem>.Empty;
+}

@@ -1,25 +1,35 @@
 ﻿@page "/"
+@using G3BlazorComponents.BaseComponents.Models;
 @using G3BlazorComponents.Sandbox.Models;
 @using G3BlazorComponents.Sandbox.ViewModels;
 @using G3BlazorComponents.BaseComponents.Templates;
+@using System.Collections.Immutable;
 @inject PersonsViewModel PersonsViewModel
 
-<DataGridTable DataSource=PersonsViewModel.Persons>
-    <HeadRowTemplate>
-        <th>Full Name</th>
-        <th>Phone</th>
-        <th>Age</th>
-        <th>Address 1</th>
-        <th>State</th>
-    </HeadRowTemplate>
-    <RowTemplate>
-        <td>@context.FirstName @context.LastName</td>
-        <td>@context.Phone</td>
-        <td>@context.Age</td>
-        <td>@context.Address.Address1</td>
-        <td>@context.Address.State</td>
-    </RowTemplate>
-    <FooterTemplate>
-        <td colspan="5">This is the footer</td>
-    </FooterTemplate>
-</DataGridTable>
+@* <table>
+    <DataGrid DataSource=@PersonsViewModel.Persons.ToImmutableList()
+              SelectionMode=@SelectionMode.Single>
+        <HeadTemplate>
+            <tr>
+                <th>Full Name</th>
+                <th>Phone</th>
+                <th>Age</th>
+                <th>Address 1</th>
+                <th>State</th>
+            </tr>
+        </HeadTemplate>
+        <RowTemplate>
+            <tr>
+                <td>@context..Item.FirstName @context.Item.LastName</td>
+                <td>@context.Item.Phone</td>
+                <td>@context.Item.Age</td>
+                <td>@context.Item.Address.Address1</td>
+                <td>@context.Item.Address.State</td>
+            </tr>
+        </RowTemplate>
+    </DataGrid>
+</table> *@
+
+<HoverLift Scale="5" TransitionTime="1">
+    <h2>Here I am!!!!!</h2>
+</HoverLift>

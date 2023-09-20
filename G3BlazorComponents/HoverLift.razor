@@ -1,0 +1,39 @@
+﻿<style>
+    .g3-hover-lift {
+        transform: scale(1, 1);
+        transform-origin: left;
+        transition: @transitionTimeString;
+    }
+        .g3-hover-lift:hover {
+            transform: scale(@Scale, @Scale);
+        }
+</style>
+
+<div class="g3-hover-lift">
+    @ChildContent
+</div>
+
+@code{
+    private double transitionTime = 0.2;
+    private string transitionTimeString = "0.2s";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public double Scale { get; set; }= 1.1;
+
+    [Parameter]
+    public double TransitionTime
+    {
+        get => transitionTime;
+        set
+        {
+            if (value < 0)
+                throw new ArgumentOutOfRangeException(nameof(value), "TransitionTime must be greater than or equal to 0.");
+
+            transitionTime = value;
+            transitionTimeString = $"{transitionTime}s";
+        }
+    }
+}

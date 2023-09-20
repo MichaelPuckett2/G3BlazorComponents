@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="BaseComponents\Templates\CellTemplate.razor" />
+    <None Include="BaseComponents\Templates\DefaultItemTemplate.razor" />
+    <None Include="BaseComponents\Templates\GridTemplate.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 

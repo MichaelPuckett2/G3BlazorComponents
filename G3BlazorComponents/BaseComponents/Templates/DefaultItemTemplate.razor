@@ -1,8 +1,11 @@
 ﻿@typeparam TItem
 
-<option value="@(KeyValuePair?.Key ?? default(int))">@KeyValuePair?.Value?.ToString()</option>
+<option class=@OptionClass value=@KeyValuePair.Key>@KeyValuePair.Value?.ToString()</option>
 
 @code {
     [Parameter]
-    public KeyValuePair<int, TItem>? KeyValuePair { get; set; }
+    public KeyValuePair<int, TItem> KeyValuePair { get; set; }
+
+    [Parameter]
+    public string OptionClass { get; set; } = string.Empty;
 }
